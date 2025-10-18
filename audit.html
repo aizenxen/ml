@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>АРМ мониторинга — Аудит</title>
+  <link rel="stylesheet" href="assets.css">
+  <script defer src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", requireAuth);
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">АРМ мониторинга</div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="experiments.html">Эксперименты</a>
+      <a href="incidents.html">Инциденты</a>
+      <a href="audit.html" class="active">Аудит</a>
+      <a href="reports.html">Отчёты</a>
+    </nav>
+    <div class="profile">
+      <span class="avatar"></span>
+      <span class="small">operator@example.com</span>
+      <button id="logout-btn" class="btn secondary" type="button">Выйти</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="hstack">
+        <input class="input" style="width:260px" placeholder="Пользователь (логин)">
+        <select style="width:180px"><option>Период: 24ч</option><option>7 дней</option><option>30 дней</option></select>
+        <button class="btn secondary" onclick="openModal('modal-audit-report')">Сформировать отчёт</button>
+        <button class="btn secondary" onclick="exportCSV()">Экспорт CSV</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="table" aria-label="Журнал аудита">
+        <thead><tr><th>Дата/время</th><th>Пользователь/роль</th><th>Действие</th><th>Объект</th><th>Результат</th><th>IP/агент</th></tr></thead>
+        <tbody>
+          <tr><td>2025-10-16 10:14:33</td><td>a.petrov / operator</td><td>Запуск обучения</td><td>Run #78421</td><td>success</td><td>10.0.0.5 / ui</td></tr>
+          <tr><td>2025-10-16 09:58:02</td><td>m.ivanova / operator</td><td>Изменение порога</td><td>ROC AUC ≥ 0.80</td><td>success</td><td>10.0.0.7 / ui</td></tr>
+          <tr><td>2025-10-16 09:12:19</td><td>k.sidorov / operator</td><td>Создание инцидента</td><td>INC-220</td><td>success</td><td>10.0.0.3 / ui</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer>Прототип UI. Данные фиктивны. © 2025</footer>
+  </div>
+
+  <!-- Modal: Отчёт аудита -->
+  <div id="modal-audit-report" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h3 style="margin:0">Отчёт аудита</h3>
+        <button class="btn secondary" onclick="closeModal('modal-audit-report')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <label class="vstack" style="width:220px">
+            <div class="label">Период</div>
+            <select><option>24 часа</option><option>7 дней</option><option>30 дней</option></select>
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Пользователь</div>
+            <input class="input" placeholder="логин">
+          </label>
+          <label class="vstack" style="flex:1">
+            <div class="label">Ключевые слова (опц.)</div>
+            <input class="input" placeholder="run, incident, threshold">
+          </label>
+        </div>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-audit-report')">Отмена</button>
+        <button class="btn" onclick="alert('Сформировано (демо)')">Сформировать</button>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
