@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Вход — АРМ мониторинга</title>
+  <link rel="stylesheet" href="assets.css">
+  <script defer src="app.js"></script>
+</head>
+<body class="login">
+  <div class="login-wrap">
+    <div class="login-card" role="dialog" aria-labelledby="login-title">
+      <h2 id="login-title">Войти</h2>
+      <div class="small">АРМ оператора мониторинга обучения ML-моделей</div>
+
+      <form class="vstack" style="margin-top:12px" onsubmit="handleLoginSubmit(event)">
+        <label class="vstack" for="login">
+          <div class="label">Логин</div>
+          <input id="login" class="input" name="login" autocomplete="username" placeholder="operator@example.com">
+        </label>
+
+        <label class="vstack" for="password">
+          <div class="label">Пароль</div>
+          <input id="password" class="input" type="password" name="password" autocomplete="current-password" placeholder="••••••••">
+        </label>
+
+        <div class="hstack" style="justify-content:space-between;margin-top:6px">
+          <label class="small"><input type="checkbox"> Запомнить меня</label>
+          <a class="small" href="#" title="Восстановление доступа пока демо">Забыли пароль?</a>
+        </div>
+
+        <div id="login-error" class="error" aria-live="assertive"></div>
+
+        <div class="hstack" style="margin-top:8px">
+          <button type="submit" class="btn">Войти</button>
+          <a class="btn secondary" href="index.html">На главную</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
