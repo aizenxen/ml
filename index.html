@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>АРМ мониторинга — Главная</title>
+  <link rel="stylesheet" href="assets.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">АРМ мониторинга</div>
+    <nav>
+      <a href="index.html" class="active">Главная</a>
+      <a href="experiments.html">Эксперименты</a>
+      <a href="incidents.html">Инциденты</a>
+      <a href="audit.html">Аудит</a>
+      <a href="reports.html">Отчёты</a>
+    </nav>
+    <div class="profile">
+      <span class="avatar" aria-hidden="true"></span>
+      <span class="small">гость</span>
+      <a class="btn secondary" href="login.html">Войти</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h3 style="margin:0 0 6px 0">Добро пожаловать</h3>
+      <div class="meta">Чтобы работать с системой, выполните вход. После аутентификации вы попадёте в раздел «Эксперименты» и сможете запускать обучения и просматривать метрики запусков.</div>
+      <div class="hstack" style="margin-top:10px">
+        <a class="btn" href="login.html">Перейти к авторизации</a>
+        <a class="btn secondary" href="experiments.html">Открыть эксперименты (потребуется вход)</a>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h4 style="margin:0 0 8px 0">Что умеет АРМ</h4>
+        <ul class="small">
+          <li>Управлять экспериментами и запускать обучение</li>
+          <li>Следить за статусами, метриками и quality gates</li>
+          <li>Регистрировать инциденты и вести аудит</li>
+          <li>Формировать отчёты и экспортировать их</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="margin:0 0 8px 0">Как работать</h4>
+        <ol class="small" style="margin:0">
+          <li>Авторизуйтесь.</li>
+          <li>Откройте «Эксперименты», создайте эксперимент или запустите обучение.</li>
+          <li>Перейдите к запуску и мониторьте метрики/quality gates.</li>
+          <li>При нарушениях — зарегистрируйте инцидент.</li>
+          <li>Смотрите аудит действий и формируйте отчёты.</li>
+        </ol>
+      </div>
+    </div>
+
+    <footer>Прототип UI. Данные фиктивны. © 2025</footer>
+  </div>
+</body>
+</html>
