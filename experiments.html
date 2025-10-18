@@ -1,0 +1,173 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>АРМ мониторинга — Эксперименты</title>
+  <link rel="stylesheet" href="assets.css">
+  <script defer src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", requireAuth);
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">АРМ мониторинга</div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="experiments.html" class="active">Эксперименты</a>
+      <a href="incidents.html">Инциденты</a>
+      <a href="audit.html">Аудит</a>
+      <a href="reports.html">Отчёты</a>
+    </nav>
+    <div class="profile">
+      <span class="avatar" aria-hidden="true"></span>
+      <span class="small">operator@example.com</span>
+      <button id="logout-btn" class="btn secondary" type="button">Выйти</button>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="card">
+      <div class="hstack">
+        <input class="input" style="width:320px" placeholder="Поиск по названию">
+        <select style="width:180px">
+          <option>Статус: любой</option><option>running</option><option>succeeded</option><option>failed</option>
+        </select>
+        <select style="width:180px">
+          <option>Проект: все</option><option>Recs</option><option>Churn</option><option>Fraud</option>
+        </select>
+        <input class="input" style="width:200px" type="date" title="Дата от">
+        <input class="input" style="width:200px" type="date" title="Дата до">
+        <button class="btn" type="button" onclick="openModal('modal-new-exp')">+ Создать эксперимент</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="table" aria-label="Список экспериментов">
+        <thead>
+          <tr>
+            <th>Эксперимент</th><th>Проект</th><th>Автор</th><th>Последний запуск</th><th>Статус</th><th>Метки</th><th>Изм.</th><th style="width:220px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>exp-recs-AB</td><td>Recs</td><td>a.petrov</td><td>#78421 • 10:14</td>
+            <td><span class="status fail">failed</span></td><td>ab-test, canary</td><td>сегодня</td>
+            <td class="hstack">
+              <a class="btn secondary" href="run.html">Открыть</a>
+              <button class="btn" type="button" onclick="openModal('modal-launch')">Запустить обучение</button>
+              <button class="btn secondary" type="button" title="Дублировать">Дублировать</button>
+              <button class="btn secondary" type="button" title="Архивировать">Архивировать</button>
+            </td>
+          </tr>
+          <tr>
+            <td>grid-churn-12</td><td>Churn</td><td>m.ivanova</td><td>#78420 • 08:03</td>
+            <td><span class="status ok">succeeded</span></td><td>grid</td><td>вчера</td>
+            <td class="hstack">
+              <a class="btn secondary" href="run.html">Открыть</a>
+              <button class="btn" type="button" onclick="openModal('modal-launch')">Запустить обучение</button>
+              <button class="btn secondary" type="button">Дублировать</button>
+              <button class="btn secondary" type="button">Архивировать</button>
+            </td>
+          </tr>
+          <tr>
+            <td>fraud-nightly</td><td>Fraud</td><td>k.sidorov</td><td>#78410 • 00:12</td>
+            <td><span class="status warn">running</span></td><td>nightly</td><td>сегодня</td>
+            <td class="hstack">
+              <a class="btn secondary" href="run.html">Открыть</a>
+              <button class="btn" type="button" onclick="openModal('modal-launch')">Запустить обучение</button>
+              <button class="btn secondary" type="button">Дублировать</button>
+              <button class="btn secondary" type="button">Архивировать</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer>Прототип UI. Данные фиктивны. © 2025</footer>
+  </div>
+
+  <!-- Modal: Новый эксперимент -->
+  <div id="modal-new-exp" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mne-title">
+    <div class="modal">
+      <header>
+        <h3 id="mne-title" style="margin:0">Создать эксперимент</h3>
+        <button class="btn secondary" onclick="closeModal('modal-new-exp')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <label class="vstack" style="flex:1">
+            <div class="label">Название</div>
+            <input class="input" placeholder="exp-recs-AB">
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Проект</div>
+            <select><option>Recs</option><option>Churn</option><option>Fraud</option></select>
+          </label>
+        </div>
+        <label class="vstack">
+          <div class="label">Описание</div>
+          <textarea placeholder="Гипотеза, целевая метрика, дизайн"></textarea>
+        </label>
+        <div class="form-row">
+          <label class="vstack" style="flex:1">
+            <div class="label">Теги</div>
+            <input class="input" placeholder="ab-test, canary">
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Ответственный</div>
+            <input class="input" placeholder="a.petrov">
+          </label>
+        </div>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-new-exp')">Отмена</button>
+        <button class="btn success" onclick="alert('Эксперимент создан (демо)'); closeModal('modal-new-exp');">Создать</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Запуск обучения -->
+  <div id="modal-launch" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="ml-title">
+    <div class="modal">
+      <header>
+        <h3 id="ml-title" style="margin:0">Запуск обучения</h3>
+        <button class="btn secondary" onclick="closeModal('modal-launch')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <label class="vstack" style="flex:1">
+            <div class="label">Конфигурация</div>
+            <input class="input" placeholder="recs:v32 • lr=0.001 • batch=512">
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Датасет</div>
+            <select><option>dataset_2025_09</option><option>dataset_2025_08</option></select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="vstack" style="width:220px">
+            <div class="label">Режим</div>
+            <select><option>full</option><option>incremental</option><option>canary</option></select>
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Ресурсы</div>
+            <select><option>1×A100</option><option>2×A100</option><option>CPU only</option></select>
+          </label>
+          <label class="vstack" style="flex:1">
+            <div class="label">Примечание</div>
+            <input class="input" placeholder="комментарий к запуску">
+          </label>
+        </div>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-launch')">Отмена</button>
+        <a class="btn success" href="run.html">Старт</a>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
