@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>АРМ мониторинга — Мониторинг запуска</title>
+  <link rel="stylesheet" href="assets.css">
+  <script defer src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      requireAuth();
+      evaluateQualityGates();
+    });
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">АРМ мониторинга</div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="experiments.html">Эксперименты</a>
+      <a href="incidents.html">Инциденты</a>
+      <a href="audit.html">Аудит</a>
+      <a href="reports.html">Отчёты</a>
+    </nav>
+    <div class="profile">
+      <span class="avatar"></span>
+      <span class="small">operator@example.com</span>
+      <button id="logout-btn" class="btn secondary" type="button">Выйти</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="hstack" style="justify-content:space-between">
+        <div>
+          <h3 style="margin:0">Run #78421 — exp-recs-AB</h3>
+          <div class="meta">Проект: Recs • Модель: recs:v32 • Метки: canary • Статус: <span class="status fail">FAILED</span></div>
+        </div>
+        <div class="hstack">
+          <button id="create-incident-from-qg" class="btn secondary" disabled onclick="openModal('modal-incident')">Зарегистрировать инцидент</button>
+          <button class="btn warn" type="button">Остановить</button>
+          <button class="btn success" type="button">Перезапустить</button>
+          <button class="btn secondary" type="button" onclick="exportCSV()">Экспорт логов</button>
+        </div>
+      </div>
+      <hr class="sep">
+      <div class="grid2">
+        <div class="vstack">
+          <div class="card">
+            <h4 style="margin:0 0 8px 0">Метрики (последние значения)</h4>
+            <table class="table">
+              <thead><tr><th>Метрика</th><th>Значение</th><th>Порог</th><th>Статус</th></tr></thead>
+              <tbody>
+                <tr><td>ROC AUC</td><td>0.78</td><td>≥ 0.80</td><td><span class="status fail quality-fail">FAIL</span></td></tr>
+                <tr><td>Latency p95</td><td>210 ms</td><td>≤ 200 ms</td><td><span class="status warn">WARN</span></td></tr>
+                <tr><td>Loss</td><td>0.41</td><td>≤ 0.45</td><td><span class="status ok">OK</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h4 style="margin:0 0 8px 0">Артефакты</h4>
+            <table class="table">
+              <thead><tr><th>Тип</th><th>Имя</th><th>Размер</th><th>Хэш</th><th></th></tr></thead>
+              <tbody>
+                <tr><td>Weights</td><td>recs_v32.pt</td><td>124 MB</td><td>f3a9…7b</td><td><button class="btn secondary">Скачать</button></td></tr>
+                <tr><td>Logs</td><td>train.log</td><td>3.2 MB</td><td>9c1d…2a</td><td><button class="btn secondary">Открыть</button></td></tr>
+                <tr><td>Report</td><td>metrics.html</td><td>240 KB</td><td>ab44…ff</td><td><button class="btn secondary">Просмотр</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="vstack">
+          <div class="card">
+            <h4 style="margin:0 0 8px 0">Таймлайн</h4>
+            <div class="chart">preprocess ✓ → train ✓ → validate ✗</div>
+            <div class="meta">Start 10:14:22 • End 11:26:51</div>
+          </div>
+          <div class="card">
+            <h4 style="margin:0 0 8px 0">Quality Gates</h4>
+            <table class="table">
+              <thead><tr><th>Правило</th><th>Значение</th><th>Статус</th></tr></thead>
+              <tbody>
+                <tr><td>ROC AUC ≥ 0.80</td><td>0.78</td><td><span class="status fail">FAIL</span></td></tr>
+                <tr><td>Latency p95 ≤ 200 ms</td><td>210</td><td><span class="status warn">WARN</span></td></tr>
+                <tr><td>Loss ≤ 0.45</td><td>0.41</td><td><span class="status ok">OK</span></td></tr>
+              </tbody>
+            </table>
+            <div class="hstack">
+              <button class="btn danger" type="button">Отказать в релизе</button>
+              <button class="btn success" type="button">Одобрить</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>Прототип UI. Данные фиктивны. © 2025</footer>
+  </div>
+
+  <!-- Modal: Регистрация инцидента -->
+  <div id="modal-incident" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mi-title">
+    <div class="modal">
+      <header>
+        <h3 id="mi-title" style="margin:0">Регистрация инцидента</h3>
+        <button class="btn secondary" onclick="closeModal('modal-incident')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <label class="vstack" style="flex:1">
+            <div class="label">Источник</div>
+            <input class="input" value="Run #78421 • recs:v32 • ROC AUC 0.78 &lt; 0.80" readonly>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="vstack" style="width:220px">
+            <div class="label">Приоритет</div>
+            <select><option>High</option><option>Medium</option><option>Low</option></select>
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Ответственный</div>
+            <input class="input" value="a.petrov">
+          </label>
+          <label class="vstack" style="flex:1">
+            <div class="label">Тег/Категория</div>
+            <input class="input" placeholder="quality-gate, latency, pipeline">
+          </label>
+        </div>
+        <label class="vstack">
+          <div class="label">Описание</div>
+          <textarea placeholder="Что произошло, что ожидалось, первые гипотезы, ссылки на логи"></textarea>
+        </label>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-incident')">Отмена</button>
+        <a class="btn warn" href="incidents.html">Создать инцидент</a>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
