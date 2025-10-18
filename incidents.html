@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>АРМ мониторинга — Инциденты</title>
+  <link rel="stylesheet" href="assets.css">
+  <script defer src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", requireAuth);
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">АРМ мониторинга</div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="experiments.html">Эксперименты</a>
+      <a href="incidents.html" class="active">Инциденты</a>
+      <a href="audit.html">Аудит</a>
+      <a href="reports.html">Отчёты</a>
+    </nav>
+    <div class="profile">
+      <span class="avatar"></span>
+      <span class="small">operator@example.com</span>
+      <button id="logout-btn" class="btn secondary" type="button">Выйти</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <div class="hstack">
+        <select style="width:180px"><option>Статус: любой</option><option>Новый</option><option>В работе</option><option>Закрыт</option></select>
+        <select style="width:180px"><option>Проект: все</option><option>Recs</option><option>Churn</option><option>Fraud</option></select>
+        <select style="width:180px"><option>Категория: все</option><option>quality-gate</option><option>pipeline</option><option>latency</option></select>
+        <input class="input" style="width:260px" placeholder="Поиск по тексту/ID">
+        <button class="btn" type="button" onclick="openModal('modal-create-incident')">Создать инцидент</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <table class="table" aria-label="Список инцидентов">
+        <thead><tr><th>ID</th><th>Время</th><th>Источник</th><th>Описание</th><th>Приоритет</th><th>Статус</th><th>Исполнитель</th><th></th></tr></thead>
+        <tbody>
+          <tr>
+            <td>INC-221</td><td>10:16</td><td>Run #78421</td><td>ROC AUC ниже порога</td>
+            <td><span class="badge">High</span></td><td><span class="status fail">Новый</span></td><td>a.petrov</td>
+            <td><a class="btn secondary" href="#" onclick="openModal('modal-incident-details')">Открыть</a></td>
+          </tr>
+          <tr>
+            <td>INC-220</td><td>09:02</td><td>Run #78410</td><td>Пайплайн остановлен</td>
+            <td><span class="badge">Medium</span></td><td><span class="status warn">В работе</span></td><td>m.ivanova</td>
+            <td><a class="btn secondary" href="#" onclick="openModal('modal-incident-details')">Открыть</a></td>
+          </tr>
+          <tr>
+            <td>INC-219</td><td>08:44</td><td>Model recs:v31</td><td>Высокая задержка</td>
+            <td><span class="badge">Low</span></td><td><span class="status ok">Закрыт</span></td><td>k.sidorov</td>
+            <td><a class="btn secondary" href="#" onclick="openModal('modal-incident-details')">Открыть</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="hstack">
+        <button class="btn secondary" onclick="openModal('modal-inc-report')">Сформировать отчёт</button>
+        <button class="btn secondary" onclick="exportPDF()">Экспорт PDF</button>
+        <button class="btn secondary" onclick="exportCSV()">Экспорт CSV</button>
+      </div>
+    </div>
+
+    <footer>Прототип UI. Данные фиктивны. © 2025</footer>
+  </div>
+
+  <!-- Modal: Создать инцидент -->
+  <div id="modal-create-incident" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h3 style="margin:0">Создать инцидент</h3>
+        <button class="btn secondary" onclick="closeModal('modal-create-incident')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <label class="vstack" style="flex:1">
+            <div class="label">Источник</div>
+            <input class="input" placeholder="Run #, Модель, Эксперимент">
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Приоритет</div>
+            <select><option>High</option><option>Medium</option><option>Low</option></select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="vstack" style="width:220px">
+            <div class="label">Статус</div>
+            <select><option>Новый</option><option>В работе</option><option>Закрыт</option></select>
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Ответственный</div>
+            <input class="input" placeholder="логин исполнителя">
+          </label>
+          <label class="vstack" style="flex:1">
+            <div class="label">Категория</div>
+            <input class="input" placeholder="quality-gate / pipeline / latency">
+          </label>
+        </div>
+        <label class="vstack">
+          <div class="label">Описание</div>
+          <textarea placeholder="Что произошло, ожидания, гипотезы, ссылки"></textarea>
+        </label>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-create-incident')">Отмена</button>
+        <button class="btn warn" onclick="alert('Инцидент создан (демо)'); closeModal('modal-create-incident')">Создать</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Детали инцидента -->
+  <div id="modal-incident-details" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h3 style="margin:0">INC-221 • Детали</h3>
+        <button class="btn secondary" onclick="closeModal('modal-incident-details')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <div class="vstack" style="flex:1">
+            <div class="label">Источник</div>
+            <div class="small">Run #78421 • recs:v32 • ROC AUC 0.78 &lt; 0.80</div>
+          </div>
+          <div class="vstack" style="width:220px">
+            <div class="label">Статус</div>
+            <select><option>Новый</option><option selected>В работе</option><option>Закрыт</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="vstack" style="width:220px">
+            <div class="label">Приоритет</div>
+            <select><option selected>High</option><option>Medium</option><option>Low</option></select>
+          </div>
+          <div class="vstack" style="width:220px">
+            <div class="label">Исполнитель</div>
+            <input class="input" value="a.petrov">
+          </div>
+          <div class="vstack" style="flex:1">
+            <div class="label">Вложения</div>
+            <div class="small"><a href="#">train.log</a>, <a href="#">metrics.html</a></div>
+          </div>
+        </div>
+        <label class="vstack">
+          <div class="label">История изменений</div>
+          <div class="card small">10:18 назначен исполнитель • 10:19 добавлен лог • 10:23 статус «В работе»</div>
+        </label>
+        <label class="vstack">
+          <div class="label">Комментарий</div>
+          <textarea placeholder="Добавьте комментарий..."></textarea>
+        </label>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-incident-details')">Закрыть</button>
+        <button class="btn success" onclick="alert('Сохранено (демо)')">Сохранить</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Отчёт по инцидентам -->
+  <div id="modal-inc-report" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h3 style="margin:0">Отчёт по инцидентам</h3>
+        <button class="btn secondary" onclick="closeModal('modal-inc-report')">Закрыть</button>
+      </header>
+      <div class="vstack">
+        <div class="form-row">
+          <label class="vstack" style="width:220px">
+            <div class="label">Период</div>
+            <select><option>24 часа</option><option>7 дней</option><option>30 дней</option></select>
+          </label>
+          <label class="vstack" style="width:220px">
+            <div class="label">Проект</div>
+            <select><option>Все</option><option>Recs</option><option>Churn</option><option>Fraud</option></select>
+          </label>
+          <label class="vstack" style="flex:1">
+            <div class="label">Категории</div>
+            <input class="input" placeholder="quality-gate, pipeline">
+          </label>
+        </div>
+      </div>
+      <footer>
+        <button class="btn secondary" onclick="closeModal('modal-inc-report')">Отмена</button>
+        <button class="btn" onclick="alert('Сформировано (демо)')">Сформировать</button>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
